@@ -19,34 +19,37 @@ def SGD(train, test, N, M, learning_rate, K, lambda_1, lambda_2, Step):
     # K: the number of latent factor
     # lambda_1,lambda_2: regularization parameters
     # Step: the max iteration
+    # 分别用正态分布初始化U、V矩阵
     U = np.random.normal(0, 0.1, (N, K))
     V = np.random.normal(0, 0.1, (M, K))
-    L = 1000.0
     rmse = []
     loss = []
     for ste in range(Step):
         los = 0.0
         for data in train:
-            u = data[0]
-            i = data[1]
-            r = data[2]
+            u = data[0]  # user id，代表某一用户
+            i = data[1]  # item id，代表某一项目
+            r = data[2]  # rating score # 该项评分
 
+            # error = rating score - predict score, 其中, predict = U * V^T
             e = r - np.dot(U[u], V[i].T)
+            # 对U、V矩阵进行梯度更新
             U[u] = U[u] + learning_rate * (e * V[i] - lambda_1 * U[u])
             V[i] = V[i] + learning_rate * (e * U[u] - lambda_2 * V[i])
 
+            # 计算损失
             los = los + 0.5 * (e ** 2 + lambda_1 * np.square(U[u]).sum() + lambda_2 * np.square(V[i]).sum())
         loss.append(los)
+        # 对这一轮训练进行测试
         rms = RMSE(U, V, test)
         rmse.append(rms)
-        # if los < L:
-        #     break
+
         if ste % 10 == 0:
-            print
-            ste / 10
+            print(' step:%d | loss:%.4f | rmse:%.4f' % (ste, los, rms))
+
     return loss, rmse, U, V
 
-
+# 根均方误差的计算
 def RMSE(U, V, test):
     count = len(test)
     sum_rmse = 0.0
@@ -59,8 +62,13 @@ def RMSE(U, V, test):
     rmse = np.sqrt(sum_rmse / count)
     return rmse
 
-
+# 加载数据
 def Load_data(filedir, ratio):
+    '''
+    :param filedir: u.data 的路径
+    :param ratio: 划分训练集和测试集的比例
+    :return:
+    '''
     user_set = {}
     item_set = {}
     N = 0;  # the number of user
@@ -87,7 +95,7 @@ def Load_data(filedir, ratio):
     test = data[int(len(data) * ratio):]
     return N, M, train, test
 
-
+# 画图
 def Figure(loss, rmse):
     fig1 = plt.figure('LOSS')
     x = range(len(loss))
@@ -95,6 +103,7 @@ def Figure(loss, rmse):
     plt.title('Convergence curve')
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
+    plt.savefig('Loss.png')
 
     fig2 = plt.figure('RMSE')
     x = range(len(rmse))
@@ -102,6 +111,7 @@ def Figure(loss, rmse):
     plt.title('Convergence curve')
     plt.xlabel('Iterations')
     plt.ylabel('RMSE')
+    plt.savefig('RMSE.png')
     show()
 
 
@@ -116,10 +126,8 @@ def main():
     K = 10
     lambda_1 = 0.1
     lambda_2 = 0.1
-    Step = 50
+    Step = 100
     loss, rmse, U, V = SGD(train, test, N, M, learning_rate, K, lambda_1, lambda_2, Step)
-    print
-    rmse[-1];
     Figure(loss, rmse)
 
 
