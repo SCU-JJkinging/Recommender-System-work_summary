@@ -196,9 +196,9 @@ def train():
             print('movie:::::max p_at_10 ', max_p_at_10, 'p_at_20', max_p_at_20, 'M_at_10', max_M_at_10, 'M_at_20',
                   max_M_at_20, 'G_at_10', max_G_at_10, 'G_at_20', max_G_at_20)
         if it % 100 == 0:
-            pd.DataFrame(p_10_to_save).to_csv('p10.csv')
-            pd.DataFrame(p_20_to_save).to_csv('p20.csv')
-            pd.DataFrame(M_10_to_save).to_csv('m10.csv')
-            pd.DataFrame(M_20_to_save).to_csv('m20.csv')
-            pd.DataFrame(G_10_to_save).to_csv('g10.csv')
-            pd.DataFrame(G_20_to_save).to_csv('g20.csv')
+            pd.DataFrame(p_10_to_save).to_csv('4_result/p10.csv')
+            pd.DataFrame(p_20_to_save).to_csv('4_result/p20.csv')
+            pd.DataFrame(M_10_to_save).to_csv('4_result/m10.csv')
+            pd.DataFrame(M_20_to_save).to_csv('4_result/m20.csv')
+            pd.DataFrame(G_10_to_save).to_csv('4_result/g10.csv')
+            pd.DataFrame(G_20_to_save).to_csv('4_result/g20.csv')
